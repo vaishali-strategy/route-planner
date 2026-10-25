@@ -1,0 +1,35 @@
+# A small city. Coordinates are in km; edge weights are road length in km.
+# Weights must be >= the straight-line distance for the A* heuristic to be at full strength.
+node Station      0  0
+node Market       2  1
+node Library      4  0
+node Hospital     6  1
+node University   8  0
+node Park         1  4
+node Mall         4  4
+node Stadium      7  4
+node Airport     11  3
+node Harbor       3  8
+node Lighthouse   8  8
+node Island      20 20   # deliberately disconnected
+
+edge Station    Market      2.5
+edge Station    Park        4.5
+edge Market     Library     2.4
+edge Market     Mall        3.8
+edge Library    Hospital    2.3
+edge Library    Mall        4.0
+edge Hospital   University  2.3
+edge Hospital   Stadium     3.2
+edge University Airport     4.3
+edge Stadium    Airport     4.5
+edge Park       Mall        3.2
+edge Park       Harbor      4.9
+edge Mall       Stadium     3.1
+edge Mall       Harbor      4.3
+edge Harbor     Lighthouse  5.0
+edge Stadium    Lighthouse  4.2
+
+# A one-way express road: Airport -> Station is fast, but you cannot drive it back.
+
+edge Airport    Station    11.5 oneway
