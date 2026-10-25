@@ -12,7 +12,7 @@ $ ./build/planner data/city.txt Station Airport
     cost 13.80, hops 5, expanded 8
 ```
 
-BFS minimises the number of roads (4 hops, 13.9 km); Dijkstra and A\* minimise distance (5 hops, 13.8 km). Same trip, different "best" route.
+BFS minimises the number of roads (4 hops, 13.9 km); Dijkstra and A\* minimise distance (5 hops, 13.8 km). Same trip with different best route.
 
 ## Build and run
 
@@ -73,7 +73,7 @@ A\* examines about 2.9x fewer places and runs about 2x faster. The time gain is 
 ## Limitations
 
 - Coordinates are flat 2D (no latitude/longitude), and there is no turn cost or live traffic.
-- Maps are text files, not real map data.
+- Maps are text files with made up values, not real map data.
 - One shortest route is returned; ties are broken arbitrarily.
 
 ## Layout
