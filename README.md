@@ -50,11 +50,11 @@ Roads are two-way unless marked `oneway`. Malformed input is reported as `file:l
 
 ## Design decisions
 
-- **Adjacency list, not adjacency matrix.** City maps are sparse, so memory is O(V + E).
-- **Dijkstra with lazy deletion.** `std::priority_queue` has no decrease-key, so a shorter route pushes a new entry and the old one is skipped when popped. It has the same complexity as an indexed heap with far less code.
-- **A\* stays optimal on any map.** Straight-line distance is a valid guess only if no road is shorter than the straight line between its ends. The graph tracks the smallest (road length / straight line) ratio while edges are added and scales the heuristic by it, so it is always consistent.
-- **Union-Find** Without it, an impossible query makes Dijkstra explore the whole connected component before giving up. With one-way roads "connected" is necessary but not sufficient, so the search still decides.
-- **Negative road lengths are rejected**, since Dijkstra is incorrect with them.
+- Adjacency list, not adjacency matrix: City maps are sparse, so memory is O(V + E).
+- Dijkstra with lazy deletion: `std::priority_queue` has no decrease-key, so a shorter route pushes a new entry and the old one is skipped when popped. It has the same complexity as an indexed heap with far less code.
+- A\* stays optimal on any map: Straight-line distance is a valid guess only if no road is shorter than the straight line between its ends. The graph tracks the smallest (road length / straight line) ratio while edges are added and scales the heuristic by it, so it is always consistent.
+- Union-Find: Without it, an impossible query makes Dijkstra explore the whole connected component before giving up. With one-way roads "connected" is necessary but not sufficient, so the search still decides.
+- Negative road lengths are rejected, since Dijkstra is incorrect with them.
 
 ## Testing
 
