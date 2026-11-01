@@ -1,8 +1,9 @@
 # City Route Planner
 
-A command-line route planner in C++17. It loads a city map (places and roads) from a text file and finds the best route between two places with **BFS**, **Dijkstra** and **A\***, and uses **Union-Find** to reject trips between disconnected parts of the map before any search runs. Standard library only.
+This is a command-line route planner in C++17. It loads a city map (places and roads) from a text file and finds the best route between two places using the **BFS**, **Dijkstra** and **A\*** algorithms, and uses **Union-Find** to reject trips between disconnected parts of the map before any search runs. 
 
 ```
+Example:
 $ ./build/planner data/city.txt Station Airport
 [bfs] Station -> Market -> Mall -> Stadium -> Airport
     cost 13.90, hops 4, expanded 11
@@ -12,7 +13,7 @@ $ ./build/planner data/city.txt Station Airport
     cost 13.80, hops 5, expanded 8
 ```
 
-BFS minimises the number of roads (4 hops, 13.9 km); Dijkstra and A\* minimise distance (5 hops, 13.8 km). Same trip with different best route.
+Here in the example given, BFS minimises the number of roads (4 hops, 13.9 km), while Dijkstra and A\* minimise distance (5 hops, 13.8 km). Same trip with different best routes are found.
 
 ## Build and run
 
@@ -35,7 +36,7 @@ node <name> <x> <y>                # names have no spaces
 edge <from> <to> <length> [oneway]
 ```
 
-Roads are two-way unless marked `oneway`. Malformed input is reported as `file:line: message`. See `data/city.txt` for an example with a one-way road and a disconnected island.
+Roads are two-way unless marked `oneway`. Malformed input is reported as `file:line: message`. `data/city.txt` has both-way roads and one-way road and a disconnected island.
 
 ## Complexity
 
@@ -49,10 +50,10 @@ Roads are two-way unless marked `oneway`. Malformed input is reported as `file:l
 
 ## Design decisions
 
-- **Adjacency list, not matrix.** City maps are sparse, so memory is O(V + E). A matrix for 90,000 places would need about 65 GB.
-- **Dijkstra with lazy deletion.** `std::priority_queue` has no decrease-key, so a shorter route pushes a new entry and the stale one is skipped when popped. Same complexity as an indexed heap with far less code.
-- **A\* stays optimal on any map.** Straight-line distance is only a valid guess if no road is shorter than the straight line between its ends. The graph tracks the smallest (road length / straight line) ratio while edges are added and scales the heuristic by it, so it is always admissible and consistent.
-- **Union-Find as a pre-check.** Without it, an impossible query makes Dijkstra explore the whole connected component before giving up. With one-way roads "connected" is necessary but not sufficient, so the search still decides.
+- **Adjacency list, not adjacency matrix.** City maps are sparse, so memory is O(V + E).
+- **Dijkstra with lazy deletion.** `std::priority_queue` has no decrease-key, so a shorter route pushes a new entry and the old one is skipped when popped. It has the same complexity as an indexed heap with far less code.
+- **A\* stays optimal on any map.** Straight-line distance is a valid guess only if no road is shorter than the straight line between its ends. The graph tracks the smallest (road length / straight line) ratio while edges are added and scales the heuristic by it, so it is always consistent.
+- **Union-Find** Without it, an impossible query makes Dijkstra explore the whole connected component before giving up. With one-way roads "connected" is necessary but not sufficient, so the search still decides.
 - **Negative road lengths are rejected**, since Dijkstra is incorrect with them.
 
 ## Testing
@@ -61,20 +62,19 @@ Roads are two-way unless marked `oneway`. Malformed input is reported as `file:l
 
 ## Benchmark
 
-300 x 300 grid (90,000 places), 50 random queries, `-O2`. Both algorithms answer identical queries; equal cost sums confirm identical answers.
+300 x 300 grid (90,000 places), 50 random queries, `-O2`. Both algorithms answer same queries, and the equal cost sums confirm identical answers.
 
 ```
 dijkstra   avg expanded 45344     total ms 187.3     (sum of costs 10772.96)
 astar      avg expanded 15740     total ms 88.6      (sum of costs 10772.96)
 ```
 
-A\* examines about 2.9x fewer places and runs about 2x faster. The time gain is smaller than the expansion gain because each A\* step also computes a square root for the heuristic. The expansion counts are exact and repeatable; the milliseconds vary by machine.
+A\* examines about 2.9x fewer places and runs about 2x faster. The time gain is smaller than the expansion gain because each A\* step also computes a square root for the heuristic. 
 
 ## Limitations
 
-- Coordinates are flat 2D (no latitude/longitude), and there is no turn cost or live traffic.
-- Maps are text files with made up values, not real map data.
-- One shortest route is returned; ties are broken arbitrarily.
+- The coordinates are flat 2D (no latitude/longitude) and there is no turn cost or live traffic. The maps are text files with made up values, and not real map data.
+- Only one shortest route is returned as the final result; ties are broken arbitrarily.
 
 ## Layout
 
